@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzt.module.app.mapper.AppCustomerMapper">
+    
+    <resultMap type="AppCustomer" id="AppCustomerResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="type"    column="type"    />
+        <result property="status"    column="status"    />
+        <result property="logonStatus"    column="logon_status"    />
+        <result property="attestStatus"    column="attest_status"    />
+        <result property="socialCode"    column="social_code"    />
+        <result property="address"    column="address"    />
+        <result property="legalPerson"    column="legal_person"    />
+        <result property="legalPersonNum"    column="legal_person_num"    />
+        <result property="regdate"    column="regdate"    />
+        <result property="expirationDate"    column="expiration_date"    />
+        <result property="businessScope"    column="business_scope"    />
+        <result property="contacts"    column="contacts"    />
+        <result property="pictureUrl"    column="picture_url"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="auditUserId"    column="audit_user_id"    />
+        <result property="deleted"    column="deleted"    />
+        <result property="account"    column="account"    />
+        <result property="password"    column="password"    />
+        <result property="tel"    column="tel"    />
+        <result property="email"    column="email"    />
+    </resultMap>
+
+    <sql id="selectAppCustomerVo">
+        app.id,app.name,app.type,app.status,app.logon_status,app.attest_status,app.social_code,
+        app.address,app.legal_person,app.legal_person_num,app.regdate,app.expiration_date,app.business_scope,
+        app.contacts,app.picture_url,app.create_time,app.update_time,app.audit_user_id,app.deleted
+        ,app.account,app.password,app.tel,app.email
+
+    </sql>
+
+    <select id="selectAppCustomerList" parameterType="AppCustomer" resultMap="AppCustomerResult">
+        select
+        <include refid="selectAppCustomerVo"/>
+        from app_customer AS app
+        <where>
+            <if test="name != null  and app.name != ''"> and app.name like concat('%', #{name}, '%')</if>
+            <if test="type != null "> and app.type = #{type}</if>
+            <if test="status != null "> and app.status = #{status}</if>
+            <if test="logonStatus != null "> and app.logon_status = #{logonStatus}</if>
+            <if test="attestStatus != null "> and app.attest_status = #{attestStatus}</if>
+            <if test="socialCode != null  and app.socialCode != ''"> and app.social_code = #{socialCode}</if>
+            <if test="address != null  and app.address != ''"> and app.address = #{address}</if>
+            <if test="legalPerson != null  and app.legalPerson != ''"> and app.legal_person = #{legalPerson}</if>
+            <if test="legalPersonNum != null  and app.legalPersonNum != ''"> and app.legal_person_num = #{legalPersonNum}</if>
+            <if test="regdate != null "> and app.regdate = #{regdate}</if>
+            <if test="expirationDate != null "> and app.expiration_date = #{expirationDate}</if>
+            <if test="businessScope != null  and app.businessScope != ''"> and app.business_scope = #{businessScope}</if>
+            <if test="contacts != null  and app.contacts != ''"> and app.contacts = #{contacts}</if>
+            <if test="pictureUrl != null  and app.pictureUrl != ''"> and app.picture_url = #{pictureUrl}</if>
+            <if test="createTime != null "> and app.create_time = #{createTime}</if>
+            <if test="auditUserId != null "> and app.audit_user_id = #{auditUserId}</if>
+            <if test="deleted != null "> and app.deleted = #{deleted}</if>
+            <if test="account != null and account != ''"> and app.account = #{account}</if>
+            <if test="password != null and password != '' "> and app.password = #{password}</if>
+            <if test="tel != null and tel != '' "> and app.tel = #{tel}</if>
+            <if test="email != null and email != '' "> and app.email = #{email}</if>
+        </where>
+    </select>
+    
+    <select id="selectAppCustomerById" parameterType="Long" resultMap="AppCustomerResult">
+        select
+        <include refid="selectAppCustomerVo"/>,su.user_id as "user.userId"
+        from app_customer AS app
+        LEFT JOIN sys_customer_user AS  scu ON app.id = scu.customer_id
+        LEFT JOIN sys_user as su ON scu.user_id = su.user_id
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAppCustomer" parameterType="AppCustomer" useGeneratedKeys="true" keyProperty="id">
+        insert into app_customer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != '' ">name,</if>
+            <if test="type != null">type,</if>
+            <if test="status != null">status,</if>
+            <if test="logonStatus != null">logon_status,</if>
+            <if test="attestStatus != null">attest_status,</if>
+            <if test="socialCode != null and socialCode != '' ">social_code,</if>
+            <if test="address != null and address != '' ">address,</if>
+            <if test="legalPerson != null and legalPerson != '' ">legal_person,</if>
+            <if test="legalPersonNum != null and legalPersonNum != '' ">legal_person_num,</if>
+            <if test="regdate != null">regdate,</if>
+            <if test="expirationDate != null">expiration_date,</if>
+            <if test="businessScope != null and businessScope != '' ">business_scope,</if>
+            <if test="contacts != null and contacts != '' ">contacts,</if>
+            <if test="pictureUrl != null and pictureUrl != '' ">picture_url,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="auditUserId != null">audit_user_id,</if>
+            <if test="deleted != null">deleted,</if>
+            <if test="account != null and account != ''">account,</if>
+            <if test="password != null and password != '' ">password,</if>
+            <if test="tel != null and tel != '' ">tel,</if>
+            <if test="email != null and email != '' ">email,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != '' ">#{name},</if>
+            <if test="type != null">#{type},</if>
+            <if test="status != null">#{status},</if>
+            <if test="logonStatus != null">#{logonStatus},</if>
+            <if test="attestStatus != null">#{attestStatus},</if>
+            <if test="socialCode != null and socialCode != '' ">#{socialCode},</if>
+            <if test="address != null and address != '' ">#{address},</if>
+            <if test="legalPerson != null and legalPerson != '' ">#{legalPerson},</if>
+            <if test="legalPersonNum != null and legalPersonNum != '' ">#{legalPersonNum},</if>
+            <if test="regdate != null">#{regdate},</if>
+            <if test="expirationDate != null">#{expirationDate},</if>
+            <if test="businessScope != null">#{businessScope},</if>
+            <if test="contacts != null and contacts != '' ">#{contacts},</if>
+            <if test="pictureUrl != null and pictureUrl != '' ">#{pictureUrl},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="auditUserId != null">#{auditUserId},</if>
+            <if test="deleted != null">#{deleted},</if>
+            <if test="account != null and account != ''">#{account},</if>
+            <if test="password != null and password != '' ">#{password},</if>
+            <if test="tel != null and tel != '' ">#{tel},</if>
+            <if test="email != null and email != '' ">#{email},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAppCustomer" parameterType="AppCustomer">
+        update app_customer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != '' ">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="logonStatus != null">logon_status = #{logonStatus},</if>
+            <if test="attestStatus != null">attest_status = #{attestStatus},</if>
+            <if test="socialCode != null and socialCode != '' ">social_code = #{socialCode},</if>
+            <if test="address != null and address != '' ">address = #{address},</if>
+            <if test="legalPerson != null and legalPerson != '' ">legal_person = #{legalPerson},</if>
+            <if test="legalPersonNum != null and legalPersonNum != '' ">legal_person_num = #{legalPersonNum},</if>
+            <if test="regdate != null">regdate = #{regdate},</if>
+            <if test="expirationDate != null">expiration_date = #{expirationDate},</if>
+            <if test="businessScope != null and businessScope != '' ">business_scope = #{businessScope},</if>
+            <if test="contacts != null and contacts != '' ">contacts = #{contacts},</if>
+            <if test="pictureUrl != null and pictureUrl != '' ">picture_url = #{pictureUrl},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="auditUserId != null">audit_user_id = #{auditUserId},</if>
+            <if test="deleted != null">deleted = #{deleted},</if>
+            <if test="account != null and account != ''">account = #{account},</if>
+            <if test="password != null and password != '' ">password = #{password},</if>
+            <if test="tel != null and tel != '' ">tel = #{tel},</if>
+            <if test="email != null and email != '' ">email = #{email},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAppCustomerById" parameterType="Long">
+        delete from app_customer where id = #{id}
+    </delete>
+
+    <delete id="deleteAppCustomerByIds" parameterType="String">
+        delete from app_customer where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="selectCustomerExists"  resultMap="AppCustomerResult">
+        SELECT app.id,app.name,app.social_code,app.tel,app.email,app.logon_status,app.account
+        FROM  app_customer as app
+        <where>
+            app.deleted = '0' AND logon_status != '2'
+            AND
+            (
+            (app.name = #{name} or app.social_code = #{socialCode})
+            OR (app.account = #{account} OR app.tel = #{account} OR app.email = #{account})
+            OR (app.account = #{tel} OR app.tel = #{tel} OR app.email = #{tel})
+            OR (app.account = #{email} OR app.tel = #{email} OR app.email = #{email})
+            )
+        </where>
+
+    </select>
+
+
+    <select id="getBindingInfo"  resultMap="AppCustomerResult">
+        SELECT app.id,app.name,app.social_code,app.tel,app.email
+        FROM  app_customer as app
+        LEFT JOIN sys_customer_user as scu ON  app.id = scu.customer_id
+        LEFT JOIN sys_user as su ON scu.user_id = su.user_id
+       WHERE su.user_id = #{userId}
+
+    </select>
+
+
+</mapper>

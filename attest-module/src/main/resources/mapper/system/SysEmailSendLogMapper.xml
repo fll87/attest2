@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzt.module.system.mapper.SysEmailSendLogMapper">
+
+    <resultMap type="SysEmailSendLog" id="SysEmailSendLogResult">
+        <result property="id"    column="id"    />
+        <result property="email"    column="email"    />
+        <result property="content"    column="content"    />
+        <result property="scene"    column="scene"    />
+        <result property="createIp"    column="create_ip"    />
+        <result property="todayIndex"    column="today_index"    />
+        <result property="creator"    column="creator"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updater"    column="updater"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysEmailSendLogVo">
+        select id, email, content, scene, create_ip, today_index, creator, create_time, updater, update_time from sys_email_send_log
+    </sql>
+
+    <select id="selectList" parameterType="SysEmailSendLog" resultMap="SysEmailSendLogResult">
+        <include refid="selectSysEmailSendLogVo"/>
+        <where>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+        </where>
+    </select>
+
+    <select id="selectById" parameterType="Long" resultMap="SysEmailSendLogResult">
+        <include refid="selectSysEmailSendLogVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectLastByEmail" resultMap="SysEmailSendLogResult">
+        <include refid="selectSysEmailSendLogVo"/>
+        where email = #{email}
+        order by id desc
+        limit 1
+    </select>
+
+    <insert id="save" parameterType="SysEmailSendLog" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_email_send_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="email != null and email != ''">email,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="scene != null">scene,</if>
+            <if test="createIp != null and createIp != ''">create_ip,</if>
+            <if test="todayIndex != null">today_index,</if>
+            <if test="creator != null">creator,</if>
+            create_time,
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="email != null and email != ''">#{email},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="scene != null">#{scene},</if>
+            <if test="createIp != null and createIp != ''">#{createIp},</if>
+            <if test="todayIndex != null">#{todayIndex},</if>
+            <if test="creator != null">#{creator},</if>
+            now(),
+         </trim>
+    </insert>
+
+</mapper>

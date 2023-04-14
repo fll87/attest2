@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzt.module.certification.mapper.BpmAttestMapper">
+
+    <resultMap type="BpmAttest" id="BpmAttestResult">
+        <result property="id"    column="id"    />
+        <result property="processId"    column="process_id"    />
+        <result property="processName"    column="process_name"    />
+        <result property="templateId"    column="template_id"    />
+        <result property="templateKey"    column="template_key"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="status"    column="status"    />
+        <result property="attestType"    column="attest_type"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="creator"    column="creator"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updater"    column="updater"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deleted"    column="deleted"    />
+    </resultMap>
+
+    <sql id="selectBpmAttestVo">
+        select id, process_id, process_name, template_id, template_key, customer_id, status, attest_type, start_time, end_time, creator, create_time, updater, update_time, deleted from bpm_attest
+    </sql>
+
+    <select id="selectList" parameterType="BpmAttest" resultMap="BpmAttestResult">
+        <include refid="selectBpmAttestVo"/>
+        <where>
+            deleted = 0
+            <if test="processId != null  and processId != ''"> and process_id = #{processId}</if>
+            <if test="processName != null  and processName != ''"> and process_name like concat('%', #{processName}, '%')</if>
+            <if test="templateId != null  and templateId != ''"> and template_id = #{templateId}</if>
+            <if test="templateKey != null  and templateKey != ''"> and template_key = #{templateKey}</if>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="attestType != null "> and attest_type = #{attestType}</if>
+            <if test="startTime != null  and startTime != ''"> and start_time = #{startTime}</if>
+            <if test="endTime != null  and endTime != ''"> and end_time = #{endTime}</if>
+            <if test="createTime != null  and createTime != ''"> and create_time = #{createTime}</if>
+        </where>
+    </select>
+
+    <select id="selectById" parameterType="Long" resultMap="BpmAttestResult">
+        <include refid="selectBpmAttestVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="save" parameterType="BpmAttest" useGeneratedKeys="true" keyProperty="id">
+        insert into bpm_attest
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="processId != null and processId != ''">process_id,</if>
+            <if test="processName != null and processName != ''">process_name,</if>
+            <if test="templateId != null and templateId != ''">template_id,</if>
+            <if test="templateKey != null and templateKey != ''">template_key,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="status != null">status,</if>
+            <if test="attestType != null">attest_type,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="creator != null">creator,</if>
+            <if test="createTime != null and">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="processId != null and processId != ''">#{processId},</if>
+            <if test="processName != null and processName != ''">#{processName},</if>
+            <if test="templateId != null and templateId != ''">#{templateId},</if>
+            <if test="templateKey != null and templateKey != ''">#{templateKey},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="attestType != null">#{attestType},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="creator != null">#{creator},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="update" parameterType="BpmAttest">
+        update bpm_attest
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="processId != null and processId != ''">process_id = #{processId},</if>
+            <if test="processName != null and processName != ''">process_name = #{processName},</if>
+            <if test="templateId != null and templateId != ''">template_id = #{templateId},</if>
+            <if test="templateKey != null and templateKey != ''">template_key = #{templateKey},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="attestType != null">attest_type = #{attestType},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="updater != null">updater = #{updater},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="deleted != null">deleted = #{deleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        update bpm_attest set deleted = 2 where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+        update bpm_attest set deleted = 2 where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

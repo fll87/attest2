@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzt.module.system.mapper.SysBpmTemplateMapper">
+
+    <resultMap type="SysBpmTemplate" id="SysBpmTemplateResult">
+        <result property="id"    column="id"    />
+        <result property="templateId"    column="template_id"    />
+        <result property="templateKey"    column="template_key"    />
+        <result property="name"    column="name"    />
+        <result property="path"    column="path"    />
+        <result property="creator"    column="creator"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updater"    column="updater"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysBpmTemplateVo">
+        select id, template_id, template_key, name, path, creator, create_time, updater, update_time from sys_bmp_template
+    </sql>
+
+    <select id="selectList" parameterType="SysBpmTemplate" resultMap="SysBpmTemplateResult">
+        <include refid="selectSysBpmTemplateVo"/>
+        <where>
+            <if test="templateId != null  and templateId != ''"> and template_id = #{templateId}</if>
+            <if test="templateKey != null  and templateKey != ''"> and template_key = #{templateKey}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectById" parameterType="Long" resultMap="SysBpmTemplateResult">
+        <include refid="selectSysBpmTemplateVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="save" parameterType="SysBpmTemplate" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_bmp_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="templateId != null and templateId != ''">template_id,</if>
+            <if test="templateKey != null and templateKey != ''">template_key,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="path != null and path != ''">path,</if>
+            <if test="creator != null and creator != ''">creator,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="templateId != null and templateId != ''">#{templateId},</if>
+            <if test="templateKey != null and templateKey != ''">#{templateKey},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="path != null and path != ''">#{path},</if>
+            <if test="creator != null and creator != ''">#{creator},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="update" parameterType="SysBpmTemplate">
+        update sys_bmp_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="path != null and path != ''">path = #{path},</if>
+            <if test="updater != null and updater != ''">updater = #{updater},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where template_key = #{templateKey}
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        delete from sys_bmp_template where id = #{id}
+    </delete>
+
+</mapper>

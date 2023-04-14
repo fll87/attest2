@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzt.module.system.mapper.SysAttestTypeMapper">
+
+    <resultMap type="SysAttestType" id="SysAttestTypeResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="creator"    column="creator"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updater"    column="updater"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deleted"    column="deleted"    />
+    </resultMap>
+
+    <sql id="selectSysAttestTypeVo">
+        select id, name, parent_id, order_num, creator, create_time, updater, update_time, deleted from sys_attest_type
+    </sql>
+
+    <select id="selectList" parameterType="SysAttestType" resultMap="SysAttestTypeResult">
+        <include refid="selectSysAttestTypeVo"/>
+        <where>
+            deleted = 0
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="orderNum != null "> and order_num = #{orderNum}</if>
+            <if test="createTime != null  and createTime != ''"> and create_time = #{createTime}</if>
+        </where>
+    </select>
+
+    <select id="selectById" parameterType="Long" resultMap="SysAttestTypeResult">
+        <include refid="selectSysAttestTypeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="save" parameterType="SysAttestType" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_attest_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="creator != null">creator,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="deleted != null">deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="creator != null">#{creator},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="deleted != null">#{deleted},</if>
+         </trim>
+    </insert>
+
+    <update id="update" parameterType="SysAttestType">
+        update sys_attest_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="updater != null">updater = #{updater},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="deleted != null">deleted = #{deleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        update sys_attest_type set deleted = 2 where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+        update sys_attest_type set deleted = 2 where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByPids">
+        update sys_attest_type set deleted = 2 where parent_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
